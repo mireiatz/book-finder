@@ -1,16 +1,23 @@
-# This is a sample Python script.
-
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+from book_fetcher import get_book_description
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+def main():
+    print("Book Summarizer")
+
+    title = input("Enter book title: ").strip()
+    while not title:
+        title = input("The title is required. Enter book title: ").strip()
+
+    author = input("Enter author (optional): ").strip() or None
+
+    description = get_book_description(title, author)
+
+    if not description or description.startswith("Error") or description == "No description available.":
+        print("\nCould not fetch book description. Try again.")
+        return
+
+    print("\nOriginal Description:\n", description)
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+if __name__ == "__main__":
+    main()
