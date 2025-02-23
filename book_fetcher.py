@@ -18,11 +18,11 @@ def select_book(books):
         book_info = books[0]["volumeInfo"]
         print(
             f"\nFound: {book_info.get('title', 'Unknown Title')} by {', '.join(book_info.get('authors', ['Unknown Author']))}")
-        confirm = input("Is this the correct book? (y/n): ").strip().lower()
+        confirm = input("Is this the book you are searching for? (y/n): ").strip().lower()
         return books[0]["id"] if confirm == "y" else None
 
     # If multiple books are found, let the user pick one
-    print("\nMultiple books found. Please select the correct one:")
+    print("\nPlease select the book you are searching for:")
     for i, book in enumerate(books):
         info = book["volumeInfo"]
         print(f"{i + 1}. {info.get('title', 'Unknown Title')} by {', '.join(info.get('authors', ['Unknown Author']))}")
@@ -34,7 +34,7 @@ def select_book(books):
 
         return books[choice]["id"]
     except ValueError:
-        return books[0]["id"]
+        return None
 
 
 def get_book_description(title, author=None):
@@ -42,12 +42,16 @@ def get_book_description(title, author=None):
     books = fetch_books(title, author)
 
     if not books:
-        return "No books found."
+        return "No books found"
 
     book_id = select_book(books)
-
     if not book_id:
-        return "Could not confirm a valid book."
+        return "No books found"
 
     book = client.get_book_by_id(book_id)
-    return book["volumeInfo"].get("description", "No description available.")
+    description = book["volumeInfo"].get("description")
+
+    if not description:
+        return "No description available"
+
+    return description
