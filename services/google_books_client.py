@@ -34,27 +34,4 @@ class GoogleBooksClient:
 
         params = {"q": query, "maxResults": max_results}
         data = self.make_request(params=params)
-        books = data.get("items", []) if data else None
-
-        if not books:
-            return None
-
-        # Check for exact title match
-        for book in books:
-            volume_info = book.get("volumeInfo", {})
-            print(volume_info.get("title"))
-
-            exact_title_match = volume_info.get("title", "").strip().lower() == title.strip().lower()
-            print(exact_title_match)
-            if exact_title_match:
-                # Check for exact author match
-                if author:
-                    authors = [a.lower() for a in volume_info.get("authors", [])]
-                    if author.lower() in authors:
-                        return [book]
-                else:
-                    return [book]
-
-        # If there's no matches, return all books
-        return books
-
+        return data.get("items", []) if data else None
