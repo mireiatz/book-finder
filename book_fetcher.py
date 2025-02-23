@@ -42,16 +42,19 @@ def get_book_description(title, author=None):
     books = fetch_books(title, author)
 
     if not books:
-        return "No books found"
+        return None
 
     book_id = select_book(books)
     if not book_id:
-        return "No books found"
+        return None
 
-    book = client.get_book_by_id(book_id)
-    description = book["volumeInfo"].get("description")
+    try:
+        book = client.get_book_by_id(book_id)
+        description = book["volumeInfo"].get("description")
 
-    if not description:
-        return "No description available"
+        if not description:
+            return None
 
-    return description
+        return description
+    except Exception:
+        return None
