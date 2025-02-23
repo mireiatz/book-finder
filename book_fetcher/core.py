@@ -10,14 +10,13 @@ def fetch_books(title, author=None):
 
 def select_book(books):
     """If multiple books are found, let the user select one and return the book ID."""
-    if not books:
+    if not books or len(books) == 0:
         return None
 
     # If only one book is found, confirm with the user
     if len(books) == 1:
-        book_info = books[0]["volumeInfo"]
-        print(
-            f"\nFound: {book_info.get('title', 'Unknown Title')} by {', '.join(book_info.get('authors', ['Unknown Author']))}")
+        info = books[0]["volumeInfo"]
+        print(f"\nFound: {info.get('title', 'Unknown Title')} by {', '.join(info.get('authors', ['Unknown Author']))}")
         confirm = input("Is this the book you are searching for? (y/n): ").strip().lower()
         return books[0]["id"] if confirm == "y" else None
 
