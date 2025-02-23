@@ -3,11 +3,6 @@ from services.google_books_client import GoogleBooksClient
 client = GoogleBooksClient()
 
 
-def fetch_books(title, author=None):
-    """Fetch books by title (and optionally author) and return a list of matching books."""
-    return client.get_books_by_author_and_title(title, author) if author else client.get_books_by_title(title)
-
-
 def select_book(books):
     """If multiple books are found, let the user select one and return the book ID."""
     if not books or len(books) == 0:
@@ -38,22 +33,17 @@ def select_book(books):
 
 def get_book_description(title, author=None):
     """Fetch the book description after confirming the correct book."""
-    books = fetch_books(title, author)
-
-    if not books:
+    books = client.get_books(title, author)
+    if books is None or len(books) == 0:
         return None
 
     book_id = select_book(books)
-    if not book_id:
+    if book_id is None:
         return None
 
-    try:
-        book = client.get_book_by_id(book_id)
-        description = book["volumeInfo"].get("description")
-
-        if not description:
-            return None
-
-        return description
-    except Exception:
+    selected_book = next((book for book in books if book["id"] == book_id), None)
+    if selected_book is None:
         return None
+
+    return selected_book["volumeInfo"].get("description", None)
+

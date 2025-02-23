@@ -17,37 +17,44 @@ class GoogleBooksClient:
         params = params or {}
         params["key"] = self.api_key
 
-        response = requests.get(url, params=params)
-        if response.status_code == 200:
+        try:
+            response = requests.get(url, params=params)
+            response.raise_for_status()
             return response.json()
-        else:
-            raise Exception(f"Google Books API Error: {response.status_code}")
+        except requests.exceptions.RequestException as e:
+            print(f"Google Books API request failed: {str(e)}")
 
-    def get_books_by_title(self, title, max_results=5):
-        """Search for books by title"""
-        params = {"q": f"intitle:{title}", "maxResults": max_results}
-        data = self.make_request(params=params)
-        return data.get("items", [])
+        return None
 
-    def get_books_by_author_and_title(self, title, author, max_results=5):
-        """Search for books by title and author"""
-        params = {"q": f"intitle:{title}+inauthor:{author}", "maxResults": max_results}
+    def get_books(self, title, author=None, max_results=5):
+        """Search for books by title, optionally filtering by author."""
+        query = f"intitle:{title}"
+        if author:
+            query += f"+inauthor:{author}"
+
+        params = {"q": query, "maxResults": max_results}
         data = self.make_request(params=params)
-        books = data.get("items", [])
+        books = data.get("items", []) if data else None
 
         if not books:
-            return []
+            return None
 
-        # Exact match filtering
+        # Check for exact title match
         for book in books:
             volume_info = book.get("volumeInfo", {})
-            if volume_info.get("title", "").strip().lower() == title.strip().lower() and \
-                    author.lower() in [a.lower() for a in volume_info.get("authors", [])]:
-                return [book]  # Return the exact match as a single-item list
+            print(volume_info.get("title"))
 
-        # If no exact match is found, return all fuzzy results
+            exact_title_match = volume_info.get("title", "").strip().lower() == title.strip().lower()
+            print(exact_title_match)
+            if exact_title_match:
+                # Check for exact author match
+                if author:
+                    authors = [a.lower() for a in volume_info.get("authors", [])]
+                    if author.lower() in authors:
+                        return [book]
+                else:
+                    return [book]
+
+        # If there's no matches, return all books
         return books
 
-    def get_book_by_id(self, book_id):
-        """Retrieve a specific book by ID."""
-        return self.make_request(relative_url=f"/{book_id}")

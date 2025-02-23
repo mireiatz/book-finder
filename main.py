@@ -14,13 +14,13 @@ def main():
 
     # Get the book description
     description = get_book_description(title, author)
-    if not description:
+    if description is None:
         print("Could not fetch book description")
         return
 
     # Summarise the description
     summary = summarize_text(description)
-    if not summary:
+    if summary is None:
         print("Could not summarize book description")
         return
 

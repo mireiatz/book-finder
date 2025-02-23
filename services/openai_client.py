@@ -3,7 +3,6 @@ from services.config import OPENAI_API_KEY
 
 
 class OpenAIClient:
-    """Handles communication with OpenAI's API."""
 
     def __init__(self, api_key=OPENAI_API_KEY):
         if not api_key:
@@ -23,13 +22,15 @@ class OpenAIClient:
             )
             return response.choices[0].message.content.strip()
         except Exception as e:
-            print(f"Error: {str(e)}")
-            return None
+            print(f"OpenAPI request failed: {str(e)}")
+
+        return None
 
     def generate_summary(self, description, model="gpt-3.5-turbo", max_tokens=150):
-        """Sends a book description to OpenAI's API and returns a summary."""
+        """Sends a description to OpenAI's API and returns a summary."""
         messages = [
-            {"role": "system", "content": "You are a helpful assistant that summarizes book descriptions."},
-            {"role": "user", "content": f"Concisely summarize this book description in max 3 sentences:\n\n{description}"}
+            {"role": "system", "content": "You are a helpful assistant that summarizes descriptions."},
+            {"role": "user", "content": f"Concisely summarize this description in max 3 sentences:\n\n{description}"}
         ]
-        return self.make_request(model, messages, max_tokens=max_tokens)
+        data = self.make_request(model, messages, max_tokens=max_tokens)
+        return data if data else None
