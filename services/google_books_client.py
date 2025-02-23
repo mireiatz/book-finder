@@ -1,15 +1,10 @@
 import requests
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-API_KEY = os.getenv("GOOGLE_BOOKS_API_KEY")
-BASE_URL = os.getenv("GOOGLE_BOOKS_API_URL")
+from services.config import GOOGLE_BOOKS_API_KEY, GOOGLE_BOOKS_API_URL
 
 
 class GoogleBooksClient:
 
-    def __init__(self, api_key=API_KEY, base_url=BASE_URL):
+    def __init__(self, api_key=GOOGLE_BOOKS_API_KEY, base_url=GOOGLE_BOOKS_API_URL):
         if not api_key or not base_url:
             raise ValueError("API details are missing. Set key and url in the .env file.")
 

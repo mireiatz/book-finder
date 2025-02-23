@@ -1,15 +1,11 @@
 import openai
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-API_KEY = os.getenv("OPENAI_API_KEY")
+from services.config import OPENAI_API_KEY
 
 
 class OpenAIClient:
     """Handles communication with OpenAI's API."""
 
-    def __init__(self, api_key=API_KEY):
+    def __init__(self, api_key=OPENAI_API_KEY):
         if not api_key:
             raise ValueError("API details are missing. Set key and url in the .env file.")
 
