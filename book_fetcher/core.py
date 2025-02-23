@@ -1,4 +1,4 @@
-from google_books_client import GoogleBooksClient
+from services.google_books_client import GoogleBooksClient
 
 client = GoogleBooksClient()
 

@@ -1,5 +1,5 @@
-from book_fetcher import get_book_description
-from summarizer import summarize_text
+from book_fetcher.core import get_book_description
+from summarizer.core import summarize_text
 
 
 def main():
