@@ -18,13 +18,14 @@ class OpenAIClient:
     def make_request(self, model, messages, temperature=0.7, max_tokens=150):
         """Generic request function for OpenAI's API."""
         try:
-            response = openai.ChatCompletion.create(
+            client = openai.OpenAI()
+            response = client.chat.completions.create(
                 model=model,
                 messages=messages,
                 temperature=temperature,
                 max_tokens=max_tokens
             )
-            return response["choices"][0]["message"]["content"].strip()
+            return response.choices[0].message.content.strip()
         except Exception as e:
             print(f"Error: {str(e)}")
             return None
